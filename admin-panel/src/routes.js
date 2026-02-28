@@ -20,6 +20,8 @@ import Login from "views/examples/Login.js";
 import CategoryList from "pages/categories/CategoryList";
 import ProductList from "pages/products/ProductList";
 import ReportList from "pages/reports/ReportList";
+import TestimonialList from "pages/testimonials/TestimonialList";
+import BlogList from "pages/blogs/BlogList";
 import RevenueDashboard from "pages/revenue/RevenueDashboard";
 import SliderList from "pages/sliders/SliderList";
 import SettingsPage from "pages/settings/SettingsPage";
@@ -75,6 +77,20 @@ var routes = [
     name: "Sliders",
     icon: "ni ni-image text-warning",
     component: <SliderList />,
+    layout: "/admin",
+  },
+  {
+    path: "/blogs",
+    name: "Blogs",
+    icon: "ni ni-align-left-2 text-primary",
+    component: <BlogList />,
+    layout: "/admin",
+  },
+  {
+    path: "/testimonials",
+    name: "Testimonials",
+    icon: "ni ni-chat-round text-primary",
+    component: <TestimonialList />,
     layout: "/admin",
   },
   {

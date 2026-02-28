@@ -1,4 +1,5 @@
 import axios from 'axios';
+import Swal from 'sweetalert2';
 
 const api = axios.create({
     baseURL: 'http://localhost:8000/api',
@@ -28,7 +29,16 @@ api.interceptors.response.use(
     (error) => {
         if (error.response && error.response.status === 401) {
             localStorage.removeItem('bioprox_user');
-            window.location.href = '/login';
+            Swal.fire({
+                icon: 'warning',
+                title: 'Session Expired',
+                text: 'Your session has expired or is unauthorized. Please log in again.',
+                confirmButtonColor: '#10B981',
+            }).then(() => {
+                window.location.href = '/login';
+            });
+            // Return a never-resolving promise to prevent other throw blocks from firing
+            return new Promise(() => { });
         }
         return Promise.reject(error);
     }

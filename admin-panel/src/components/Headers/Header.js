@@ -1,5 +1,30 @@
+import { useState, useEffect } from "react";
 import { Card, CardBody, CardTitle, Container, Row, Col } from "reactstrap";
+import dashboardService from "services/dashboardService";
+
 const Header = () => {
+  const [stats, setStats] = useState({
+    total_products: 0,
+    total_categories: 0,
+    total_blogs: 0,
+    total_testimonials: 0,
+    total_orders: 0
+  });
+
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        const res = await dashboardService.getStats();
+        if (res.success) {
+          setStats(res.data);
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard stats:", error);
+      }
+    };
+    fetchStats();
+  }, []);
+
   return (
     <>
       <div className="header bg-gradient-success pb-8 pt-5 pt-md-8">
@@ -16,23 +41,23 @@ const Header = () => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
-                          Traffic
+                          Products
                         </CardTitle>
                         <span className="h2 font-weight-bold mb-0">
-                          350,897
+                          {stats.total_products}
                         </span>
                       </div>
                       <Col className="col-auto">
-                        <div className="icon icon-shape bg-success text-white rounded-circle shadow">
+                        <div className="icon icon-shape bg-danger text-white rounded-circle shadow">
                           <i className="fas fa-chart-bar" />
                         </div>
                       </Col>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       <span className="text-success mr-2">
-                        <i className="fa fa-arrow-up" /> 3.48%
+                        Total items
                       </span>{" "}
-                      <span className="text-nowrap">Since last month</span>
+                      <span className="text-nowrap">in catalog</span>
                     </p>
                   </CardBody>
                 </Card>
@@ -46,21 +71,23 @@ const Header = () => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
-                          New users
+                          Categories
                         </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">2,356</span>
+                        <span className="h2 font-weight-bold mb-0">
+                          {stats.total_categories}
+                        </span>
                       </div>
                       <Col className="col-auto">
-                        <div className="icon icon-shape bg-success text-white rounded-circle shadow">
+                        <div className="icon icon-shape bg-warning text-white rounded-circle shadow">
                           <i className="fas fa-chart-pie" />
                         </div>
                       </Col>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       <span className="text-success mr-2">
-                        <i className="fas fa-arrow-up" /> 3.48%
+                        Product
                       </span>{" "}
-                      <span className="text-nowrap">Since last week</span>
+                      <span className="text-nowrap">categories</span>
                     </p>
                   </CardBody>
                 </Card>
@@ -74,21 +101,23 @@ const Header = () => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
-                          Sales
+                          Blogs
                         </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">924</span>
+                        <span className="h2 font-weight-bold mb-0">
+                          {stats.total_blogs}
+                        </span>
                       </div>
                       <Col className="col-auto">
-                        <div className="icon icon-shape bg-success text-white rounded-circle shadow">
-                          <i className="fas fa-users" />
+                        <div className="icon icon-shape bg-yellow text-white rounded-circle shadow">
+                          <i className="fas fa-edit" />
                         </div>
                       </Col>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
-                      <span className="text-success mr-2">
-                        <i className="fas fa-arrow-up" /> 1.10%
+                      <span className="text-warning mr-2">
+                        Published
                       </span>{" "}
-                      <span className="text-nowrap">Since yesterday</span>
+                      <span className="text-nowrap">articles</span>
                     </p>
                   </CardBody>
                 </Card>
@@ -102,21 +131,23 @@ const Header = () => {
                           tag="h5"
                           className="text-uppercase text-muted mb-0"
                         >
-                          Performance
+                          Testimonials
                         </CardTitle>
-                        <span className="h2 font-weight-bold mb-0">49,65%</span>
+                        <span className="h2 font-weight-bold mb-0">
+                          {stats.total_testimonials}
+                        </span>
                       </div>
                       <Col className="col-auto">
-                        <div className="icon icon-shape bg-success text-white rounded-circle shadow">
-                          <i className="fas fa-percent" />
+                        <div className="icon icon-shape bg-info text-white rounded-circle shadow">
+                          <i className="fas fa-comment" />
                         </div>
                       </Col>
                     </Row>
                     <p className="mt-3 mb-0 text-muted text-sm">
                       <span className="text-success mr-2">
-                        <i className="fas fa-arrow-up" /> 12%
+                        Customer
                       </span>{" "}
-                      <span className="text-nowrap">Since last month</span>
+                      <span className="text-nowrap">reviews</span>
                     </p>
                   </CardBody>
                 </Card>

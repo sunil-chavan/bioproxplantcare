@@ -31,4 +31,12 @@ interface OrderServiceInterface extends BaseServiceInterface
      * @return Collection
      */
     public function getUserOrders(string $userId): Collection;
+
+    /**
+     * Verify Razorpay payment.
+     *
+     * @param array $data
+     * @return bool
+     */
+    public function verifyPayment(array $data): bool;
 }

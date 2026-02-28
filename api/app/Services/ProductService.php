@@ -34,6 +34,19 @@ class ProductService extends BaseService implements ProductServiceInterface
             $data['image'] = asset('storage/' . $path);
         }
 
+        if (isset($data['multiple_images']) && is_array($data['multiple_images'])) {
+            $processedImages = [];
+            foreach ($data['multiple_images'] as $img) {
+                if ($img instanceof UploadedFile) {
+                    $path = $img->store('products/gallery', 'public');
+                    $processedImages[] = asset('storage/' . $path);
+                } elseif (is_string($img)) {
+                    $processedImages[] = $img;
+                }
+            }
+            $data['multiple_images'] = $processedImages;
+        }
+
         return parent::create($data);
     }
 
@@ -45,6 +58,19 @@ class ProductService extends BaseService implements ProductServiceInterface
         if (isset($data['image']) && $data['image'] instanceof UploadedFile) {
             $path = $data['image']->store('products', 'public');
             $data['image'] = asset('storage/' . $path);
+        }
+
+        if (isset($data['multiple_images']) && is_array($data['multiple_images'])) {
+            $processedImages = [];
+            foreach ($data['multiple_images'] as $img) {
+                if ($img instanceof UploadedFile) {
+                    $path = $img->store('products/gallery', 'public');
+                    $processedImages[] = asset('storage/' . $path);
+                } elseif (is_string($img)) {
+                    $processedImages[] = $img;
+                }
+            }
+            $data['multiple_images'] = $processedImages;
         }
 
         return parent::update($id, $data);

@@ -37,7 +37,11 @@ class ProductRequest extends FormRequest
             'short_description' => 'nullable|string',
             'is_featured' => 'nullable|boolean',
             'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string',
+            'meta_keywords' => 'nullable|string|max:255',
             'status' => 'nullable|string|in:Active,Inactive,Draft',
+            'multiple_images' => 'nullable|array',
+            'multiple_images.*' => 'nullable', // Can be file or string
         ];
     }
 }

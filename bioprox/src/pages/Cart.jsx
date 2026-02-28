@@ -27,18 +27,18 @@ const Cart = () => {
 
     return (
         <div className="bg-gray-50 min-h-screen py-12">
-            <div className="container mx-auto px-6">
+            <div className="container mx-auto px-4 sm:px-6">
                 <h1 className="text-4xl md:text-5xl font-bold text-green-900 mb-8">Shopping Cart</h1>
 
                 <div className="grid lg:grid-cols-3 gap-8">
                     {/* Cart Items */}
                     <div className="lg:col-span-2 space-y-4">
                         {cartItems.map((item) => (
-                            <div key={item.id} className="bg-white rounded-2xl p-6 shadow-sm hover:shadow-lg transition">
-                                <div className="flex gap-6">
+                            <div key={item.id} className="bg-white rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-lg transition">
+                                <div className="flex flex-col sm:flex-row gap-6">
                                     {/* Product Image */}
-                                    <Link to={`/product/${item.product?.id}`} className="shrink-0">
-                                        <div className="w-32 h-32 bg-gray-100 rounded-xl overflow-hidden">
+                                    <Link to={`/product/${item.product?.id}`} className="shrink-0 mx-auto sm:mx-0">
+                                        <div className="w-24 h-24 sm:w-32 sm:h-32 bg-gray-100 rounded-xl overflow-hidden">
                                             <img
                                                 src={item.product?.image || "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=300"}
                                                 alt={item.product?.name}
@@ -48,8 +48,8 @@ const Cart = () => {
                                     </Link>
 
                                     {/* Product Info */}
-                                    <div className="flex-grow">
-                                        <div className="flex justify-between items-start mb-2">
+                                    <div className="flex-grow text-center sm:text-left">
+                                        <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start mb-2 gap-2">
                                             <Link to={`/product/${item.product?.id}`}>
                                                 <h3 className="font-bold text-lg text-gray-900 hover:text-green-700 transition">
                                                     {item.product?.name}
@@ -57,41 +57,41 @@ const Cart = () => {
                                             </Link>
                                             <button
                                                 onClick={() => removeCart(item.id)}
-                                                className="text-red-600 hover:text-red-800 font-semibold text-sm"
+                                                className="text-red-500 hover:text-red-700 font-bold text-xs uppercase tracking-widest bg-red-50 px-3 py-1.5 rounded-lg"
                                             >
                                                 Remove
                                             </button>
                                         </div>
 
-                                        <p className="text-2xl font-bold text-green-700 mb-4">₹{item.product?.price}</p>
+                                        <p className="text-xl sm:text-2xl font-black text-green-700 mb-4">₹{item.product?.price}</p>
 
                                         {/* Quantity Controls */}
-                                        <div className="flex items-center gap-4">
-                                            <div className="flex items-center border-2 border-gray-200 rounded-xl overflow-hidden">
+                                        <div className="flex flex-col sm:flex-row items-center gap-4">
+                                            <div className="flex items-center bg-bg-soft border border-gray-100 rounded-xl overflow-hidden p-0.5">
                                                 <button
                                                     onClick={() => updateCart(item.id, item.quantity - 1)}
                                                     disabled={item.quantity <= 1}
-                                                    className="px-4 py-2 hover:bg-gray-100 disabled:opacity-50 transition font-bold"
+                                                    className="w-10 h-10 flex items-center justify-center hover:bg-white transition font-black text-lg disabled:opacity-20"
                                                 >
                                                     −
                                                 </button>
-                                                <span className="px-6 py-2 font-bold">{item.quantity}</span>
+                                                <span className="w-10 text-center font-black">{item.quantity}</span>
                                                 <button
                                                     onClick={() => updateCart(item.id, item.quantity + 1)}
                                                     disabled={item.quantity >= (item.product?.stock || 999)}
-                                                    className="px-4 py-2 hover:bg-gray-100 disabled:opacity-50 transition font-bold"
+                                                    className="w-10 h-10 flex items-center justify-center hover:bg-white transition font-black text-lg disabled:opacity-20"
                                                 >
                                                     +
                                                 </button>
                                             </div>
 
                                             {item.product?.stock && item.quantity >= item.product.stock && (
-                                                <span className="text-sm text-orange-600 font-semibold">Max stock reached</span>
+                                                <span className="text-[10px] text-orange-600 font-black uppercase tracking-widest">Max stock</span>
                                             )}
                                         </div>
 
-                                        <p className="text-sm text-gray-500 mt-3">
-                                            Subtotal: <span className="font-bold text-gray-900">₹{(item.product?.price || 0) * item.quantity}</span>
+                                        <p className="text-xs font-bold text-dark/30 mt-4">
+                                            Subtotal: <span className="font-black text-primary">₹{(item.product?.price || 0) * item.quantity}</span>
                                         </p>
                                     </div>
                                 </div>

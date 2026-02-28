@@ -51,7 +51,10 @@ const ProductList = () => {
         image: "",
         is_featured: false,
         status: "Active",
-        meta_title: ""
+        meta_title: "",
+        meta_description: "",
+        meta_keywords: "",
+        multiple_images: []
     });
 
     const [imagePreview, setImagePreview] = useState(null);
@@ -80,7 +83,10 @@ const ProductList = () => {
                 image: "",
                 is_featured: false,
                 status: "Active",
-                meta_title: ""
+                meta_title: "",
+                meta_description: "",
+                meta_keywords: "",
+                multiple_images: []
             });
             setImagePreview(null);
         }
@@ -167,12 +173,33 @@ const ProductList = () => {
         }
     };
 
+    const handleMultipleImagesChange = (e) => {
+        const files = Array.from(e.target.files);
+        setFormData(prev => ({
+            ...prev,
+            multiple_images: [...(prev.multiple_images || []), ...files]
+        }));
+    };
+
+    const removeMultipleImage = (index) => {
+        setFormData(prev => ({
+            ...prev,
+            multiple_images: prev.multiple_images.filter((_, i) => i !== index)
+        }));
+    };
+
     const handleSave = async () => {
         try {
             setSaving(true);
             const data = new FormData();
             Object.keys(formData).forEach(key => {
-                if (formData[key] !== null && formData[key] !== undefined) {
+                if (key === 'multiple_images') {
+                    if (formData.multiple_images && formData.multiple_images.length > 0) {
+                        formData.multiple_images.forEach(file => {
+                            data.append('multiple_images[]', file);
+                        });
+                    }
+                } else if (formData[key] !== null && formData[key] !== undefined) {
                     data.append(key, formData[key] === true ? 1 : (formData[key] === false ? 0 : formData[key]));
                 }
             });
@@ -197,11 +224,13 @@ const ProductList = () => {
             console.error("Error saving product:", error);
             const errors = error.response?.data?.errors;
             if (errors) {
-                Object.values(errors).forEach((errArr, index) => {
+                // Handle both object of arrays (Laravel default) and flat array of strings
+                const errorList = Array.isArray(errors) ? errors : Object.values(errors).flat();
+                errorList.forEach((err, index) => {
                     setTimeout(() => {
                         Toast.fire({
                             icon: 'error',
-                            title: errArr[0]
+                            title: err
                         });
                     }, index * 500);
                 });
@@ -232,7 +261,10 @@ const ProductList = () => {
             image: product.image,
             is_featured: product.is_featured,
             status: product.status,
-            meta_title: product.meta_title
+            meta_title: product.meta_title || "",
+            meta_description: product.meta_description || "",
+            meta_keywords: product.meta_keywords || "",
+            multiple_images: product.multiple_images || []
         });
         setImagePreview(product.image);
         setModal(true);
@@ -563,7 +595,7 @@ const ProductList = () => {
                         <Row>
                             <Col md="12">
                                 <FormGroup>
-                                    <Label for="image">Product Image</Label>
+                                    <Label for="image">Product Main Image</Label>
                                     <Input
                                         type="file"
                                         id="image"
@@ -578,7 +610,36 @@ const ProductList = () => {
                                                 style={{ maxWidth: '100%', maxHeight: '200px', borderRadius: '10px', border: '1px dashed #ddd' }}
                                             />
                                             <br />
-                                            <small className="text-muted">Image Preview</small>
+                                            <small className="text-muted">Main Image Preview</small>
+                                        </div>
+                                    )}
+                                </FormGroup>
+                                <FormGroup className="mt-4">
+                                    <Label for="multiple_images">Product Gallery (Multiple Images)</Label>
+                                    <Input
+                                        type="file"
+                                        id="multiple_images"
+                                        multiple
+                                        onChange={handleMultipleImagesChange}
+                                        accept="image/*"
+                                    />
+                                    {formData.multiple_images && formData.multiple_images.length > 0 && (
+                                        <div className="mt-2 d-flex flex-wrap gap-2">
+                                            {formData.multiple_images.map((img, idx) => (
+                                                <div key={idx} className="position-relative m-1" style={{ display: "inline-block" }}>
+                                                    <img
+                                                        src={img instanceof File ? URL.createObjectURL(img) : img}
+                                                        alt="Gallery preview"
+                                                        style={{ width: "80px", height: "80px", objectFit: "cover", borderRadius: "5px", border: "1px solid #ddd" }}
+                                                    />
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => removeMultipleImage(idx)}
+                                                        className="btn btn-sm btn-danger position-absolute"
+                                                        style={{ top: "-5px", right: "-5px", padding: "0 5px", borderRadius: "50%" }}
+                                                    >×</button>
+                                                </div>
+                                            ))}
                                         </div>
                                     )}
                                 </FormGroup>
@@ -619,6 +680,26 @@ const ProductList = () => {
                                 id="meta_title"
                                 placeholder="SEO Title"
                                 value={formData.meta_title}
+                                onChange={handleInputChange}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="meta_description">Meta Description</Label>
+                            <Input
+                                type="textarea"
+                                id="meta_description"
+                                placeholder="SEO Meta Description"
+                                value={formData.meta_description}
+                                onChange={handleInputChange}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <Label for="meta_keywords">Meta Keywords</Label>
+                            <Input
+                                type="text"
+                                id="meta_keywords"
+                                placeholder="e.g. plants, nursery, green"
+                                value={formData.meta_keywords}
                                 onChange={handleInputChange}
                             />
                         </FormGroup>

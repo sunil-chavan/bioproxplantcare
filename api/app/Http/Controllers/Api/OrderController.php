@@ -87,4 +87,28 @@ class OrderController extends ApiBaseController
             return $this->sendError($e->getMessage(), [], 400);
         }
     }
+
+    /**
+     * Verify payment.
+     */
+    public function verifyPayment(Request $request): JsonResponse
+    {
+        try {
+            $data = $request->validate([
+                'razorpay_order_id' => 'required|string',
+                'razorpay_payment_id' => 'required|string',
+                'razorpay_signature' => 'required|string',
+            ]);
+
+            $success = $this->orderService->verifyPayment($data);
+
+            if ($success) {
+                return $this->sendSuccess([], 'Payment verified successfully');
+            }
+
+            return $this->sendError('Payment verification failed');
+        } catch (Exception $e) {
+            return $this->sendError($e->getMessage(), [], 400);
+        }
+    }
 }

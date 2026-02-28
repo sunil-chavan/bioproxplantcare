@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { Package, ChevronRight, Calendar, MapPin, CreditCard, ShoppingBag } from "lucide-react";
 import { getOrders } from "../api/orderService";
 
 const Order = () => {
@@ -8,13 +10,15 @@ const Order = () => {
 
     useEffect(() => {
         fetchOrders();
+        window.scrollTo(0, 0);
     }, []);
 
     const fetchOrders = async () => {
         setLoading(true);
         try {
             const res = await getOrders();
-            setOrders(res.data.data || res.data || []);
+            const data = res.data.data || res.data || [];
+            setOrders(Array.isArray(data) ? data : []);
         } catch (error) {
             console.error("Error fetching orders:", error);
             setOrders([]);
@@ -23,29 +27,32 @@ const Order = () => {
         }
     };
 
-    const getStatusColor = (status) => {
-        const colors = {
-            pending: "bg-yellow-100 text-yellow-800",
-            processing: "bg-blue-100 text-blue-800",
-            shipped: "bg-purple-100 text-purple-800",
-            delivered: "bg-green-100 text-green-800",
-            cancelled: "bg-red-100 text-red-800"
-        };
-        return colors[status] || "bg-gray-100 text-gray-800";
+    const getStatusStyles = (status) => {
+        const s = status?.toLowerCase();
+        switch (s) {
+            case 'delivered':
+                return "bg-secondary/10 text-secondary border-secondary/20";
+            case 'pending':
+                return "bg-accent/10 text-accent border-accent/20";
+            case 'processing':
+                return "bg-blue-50 text-blue-600 border-blue-100";
+            case 'cancelled':
+                return "bg-red-50 text-red-600 border-red-100";
+            default:
+                return "bg-gray-50 text-gray-600 border-gray-100";
+        }
     };
 
     if (loading) {
         return (
-            <div className="container mx-auto px-6 py-12">
-                <h1 className="text-4xl font-bold text-green-900 mb-8">My Orders</h1>
-                <div className="space-y-4">
-                    {[...Array(3)].map((_, i) => (
-                        <div key={i} className="bg-white rounded-2xl p-6 animate-pulse">
-                            <div className="bg-gray-200 h-6 rounded w-1/4 mb-4"></div>
-                            <div className="bg-gray-200 h-4 rounded w-1/2 mb-4"></div>
-                            <div className="bg-gray-200 h-8 rounded w-full"></div>
-                        </div>
-                    ))}
+            <div className="min-h-screen bg-bg-soft/30 py-20">
+                <div className="container mx-auto px-6">
+                    <div className="h-10 w-48 bg-gray-200 rounded-lg animate-pulse mb-12"></div>
+                    <div className="space-y-6">
+                        {[1, 2, 3].map(i => (
+                            <div key={i} className="h-40 bg-white rounded-3xl animate-pulse shadow-sm"></div>
+                        ))}
+                    </div>
                 </div>
             </div>
         );
@@ -53,13 +60,17 @@ const Order = () => {
 
     if (orders.length === 0) {
         return (
-            <div className="min-h-[70vh] flex items-center justify-center bg-gray-50">
-                <div className="text-center">
-                    <div className="text-8xl mb-6">📦</div>
-                    <h2 className="text-3xl font-bold text-gray-900 mb-4">No orders yet</h2>
-                    <p className="text-gray-600 mb-8">Start shopping to see your orders here</p>
-                    <Link to="/shop" className="bg-green-700 text-white px-8 py-4 rounded-xl font-bold text-lg hover:bg-green-800 transition inline-block shadow-lg">
-                        Browse Shop
+            <div className="min-h-[80vh] flex items-center justify-center bg-white px-6">
+                <div className="text-center max-w-md">
+                    <div className="w-24 h-24 bg-bg-soft rounded-full flex items-center justify-center mx-auto mb-8 text-primary/20">
+                        <ShoppingBag size={48} />
+                    </div>
+                    <h2 className="text-3xl font-display font-black text-primary mb-4">No orders yet?</h2>
+                    <p className="text-dark/50 font-medium mb-10">
+                        Your garden is waiting for its first botanical companions. Explore our premium collection today.
+                    </p>
+                    <Link to="/shop" className="btn-primary w-full py-4 text-lg shadow-xl shadow-primary/10">
+                        Start Shopping
                     </Link>
                 </div>
             </div>
@@ -67,103 +78,111 @@ const Order = () => {
     }
 
     return (
-        <div className="bg-gray-50 min-h-screen py-12">
-            <div className="container mx-auto px-6">
-                <h1 className="text-4xl md:text-5xl font-bold text-green-900 mb-8">My Orders</h1>
+        <div className="min-h-screen bg-bg-soft/30 py-20 relative overflow-hidden">
+            {/* Background Accents */}
+            <div className="absolute top-0 right-0 w-96 h-96 bg-secondary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+
+            <div className="container relative z-10 mx-auto px-6">
+                <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                    <div>
+                        <h1 className="text-4xl md:text-5xl font-display font-black text-primary mb-2">My Purchase History</h1>
+                        <p className="text-dark/40 font-medium tracking-tight">Manage and track your organic botanical orders.</p>
+                    </div>
+                    <div className="bg-white px-4 py-2 rounded-xl border border-gray-100 shadow-sm text-xs font-black uppercase tracking-widest text-primary">
+                        Total Orders: {orders.length}
+                    </div>
+                </div>
 
                 <div className="space-y-6">
-                    {orders.map(order => (
-                        <div key={order.id} className="bg-white rounded-2xl p-6 md:p-8 shadow-sm hover:shadow-lg transition">
-                            <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
-                                <div>
-                                    <h3 className="text-xl font-bold text-gray-900 mb-2">
-                                        Order #{order.id}
-                                    </h3>
-                                    <p className="text-gray-600 text-sm">
-                                        Placed on {new Date(order.created_at).toLocaleDateString('en-IN', {
-                                            year: 'numeric',
-                                            month: 'long',
-                                            day: 'numeric'
-                                        })}
-                                    </p>
-                                </div>
-                                <div className="mt-4 md:mt-0">
-                                    <span className={`px-4 py-2 rounded-full font-semibold text-sm ${getStatusColor(order.status)}`}>
-                                        {order.status?.toUpperCase()}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div className="grid md:grid-cols-2 gap-6 mb-6">
-                                <div>
-                                    <h4 className="font-semibold text-gray-900 mb-3">Shipping Address</h4>
-                                    <p className="text-gray-600 text-sm leading-relaxed">
-                                        {order.shipping_address || order.address}<br />
-                                        {order.city && `${order.city}, `}{order.state} {order.pincode && `- ${order.pincode}`}<br />
-                                        {order.phone && `📞 ${order.phone}`}
-                                    </p>
-                                </div>
-
-                                <div>
-                                    <h4 className="font-semibold text-gray-900 mb-3">Order Summary</h4>
-                                    <div className="space-y-1 text-sm">
-                                        <div className="flex justify-between text-gray-600">
-                                            <span>Items ({order.items?.length || 0})</span>
-                                            <span>₹{order.total_amount || 0}</span>
+                    {orders.map((order, i) => (
+                        <motion.div
+                            key={order.id}
+                            initial={{ opacity: 0, y: 20 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{ delay: i * 0.1 }}
+                            className="group bg-white rounded-3xl border border-gray-100 p-6 md:p-8 hover:shadow-2xl hover:border-secondary/20 transition-all duration-500"
+                        >
+                            <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
+                                <div className="flex-grow">
+                                    <div className="flex flex-wrap items-center gap-4 mb-4">
+                                        <div className="bg-primary/5 text-primary px-4 py-1.5 rounded-lg text-xs font-black uppercase tracking-widest">
+                                            Order #{order.id}
                                         </div>
-                                        <div className="flex justify-between text-gray-600">
-                                            <span>Shipping</span>
-                                            <span>₹{order.shipping_amount ?? 0}</span>
-                                        </div>
-                                        <div className="flex justify-between font-bold text-gray-900 pt-2 border-t">
-                                            <span>Total</span>
-                                            <span className="text-green-700">₹{order.net_amount || order.total || 0}</span>
+                                        <div className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest border ${getStatusStyles(order.status)}`}>
+                                            {order.status || 'Pending'}
                                         </div>
                                     </div>
-                                </div>
-                            </div>
 
-                            {order.items && order.items.length > 0 && (
-                                <div className="border-t pt-6">
-                                    <h4 className="font-semibold text-gray-900 mb-4">Items</h4>
-                                    <div className="space-y-3">
-                                        {order.items.map((item, idx) => (
-                                            <div key={idx} className="flex gap-4">
-                                                <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden shrink-0">
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-bg-soft flex items-center justify-center text-primary/40">
+                                                <Calendar size={18} />
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-dark/30 mb-0.5">Order Date</p>
+                                                <p className="text-sm font-bold text-primary">
+                                                    {new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
+                                                </p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-bg-soft flex items-center justify-center text-primary/40">
+                                                <CreditCard size={18} />
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-dark/30 mb-0.5">Total Amount</p>
+                                                <p className="text-sm font-bold text-primary">₹{order.net_amount || order.total_amount}</p>
+                                            </div>
+                                        </div>
+
+                                        <div className="flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-xl bg-bg-soft flex items-center justify-center text-primary/40">
+                                                <Package size={18} />
+                                            </div>
+                                            <div>
+                                                <p className="text-[10px] font-black uppercase tracking-widest text-dark/30 mb-0.5">Item Count</p>
+                                                <p className="text-sm font-bold text-primary">{order.items?.length || 0} Products</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Product Previews */}
+                                    {order.items && order.items.length > 0 && (
+                                        <div className="flex flex-wrap gap-3">
+                                            {order.items.slice(0, 5).map((item, idx) => (
+                                                <div key={idx} className="w-14 h-14 rounded-xl border border-gray-100 p-1 bg-white shadow-sm overflow-hidden group/thumb relative">
                                                     <img
-                                                        src={item.product?.image ? `${import.meta.env.VITE_API_URL || ''}/storage/${item.product.image}` : "https://via.placeholder.com/100"}
+                                                        src={item.product?.image ? (item.product.image.startsWith('http') ? item.product.image : `${import.meta.env.VITE_API_URL}/storage/${item.product.image}`) : "https://via.placeholder.com/100?text=P"}
                                                         alt={item.product?.name}
-                                                        className="w-full h-full object-cover"
-                                                        onError={(e) => { e.target.onerror = null; e.target.src = "https://via.placeholder.com/100?text=No+Image"; }}
+                                                        className="w-full h-full object-contain group-hover/thumb:scale-110 transition-transform duration-500"
                                                     />
                                                 </div>
-                                                <div className="flex-grow">
-                                                    <h5 className="font-semibold text-sm">{item.product?.name}</h5>
-                                                    <p className="text-gray-600 text-sm">Qty: {item.quantity} × ₹{item.price}</p>
+                                            ))}
+                                            {order.items.length > 5 && (
+                                                <div className="w-14 h-14 rounded-xl bg-bg-soft flex items-center justify-center text-[10px] font-black text-primary border border-dashed border-primary/20">
+                                                    +{order.items.length - 5}
                                                 </div>
-                                                <div className="text-right">
-                                                    <p className="font-bold text-green-700">₹{item.total || (item.quantity * item.price)}</p>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
-                            )}
 
-                            <div className="flex gap-4 mt-6 pt-6 border-t">
-                                <Link
-                                    to={`/orders/${order.id}`}
-                                    className="bg-green-700 text-white px-6 py-3 rounded-xl font-semibold hover:bg-green-800 transition"
-                                >
-                                    View Details
-                                </Link>
-                                {order.status === 'pending' && (
-                                    <button className="border-2 border-red-600 text-red-600 px-6 py-3 rounded-xl font-semibold hover:bg-red-50 transition">
-                                        Cancel Order
+                                <div className="flex lg:flex-col gap-4">
+                                    <Link
+                                        to={`/orders/${order.id}`}
+                                        className="btn-primary flex-grow lg:flex-grow-0 px-8 py-3.5 shadow-lg shadow-primary/10"
+                                    >
+                                        Order Details
+                                        <ChevronRight size={18} />
+                                    </Link>
+                                    <button className="btn-outline flex-grow lg:flex-grow-0 px-8 py-3.5 border-gray-200">
+                                        Need Help?
                                     </button>
-                                )}
+                                </div>
                             </div>
-                        </div>
+                        </motion.div>
                     ))}
                 </div>
             </div>

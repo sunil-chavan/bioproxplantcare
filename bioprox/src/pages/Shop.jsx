@@ -3,6 +3,8 @@ import { Link, useSearchParams } from "react-router-dom";
 import { getProducts } from "../api/productService";
 import { getCategories } from "../api/categoryService";
 import { useCart } from "../context/CartContext";
+import { motion, AnimatePresence } from "framer-motion";
+import { Filter, X, ChevronRight, SlidersHorizontal, ShoppingCart } from "lucide-react";
 
 const Shop = () => {
     const [products, setProducts] = useState([]);
@@ -104,26 +106,103 @@ const Shop = () => {
                             : "Browse our premium organic collection"}
                     </p>
 
-                    <div className="mt-6 flex items-center gap-3">
-                        <label className="text-sm font-semibold text-gray-700">
-                            Sort by:
-                        </label>
-                        <select
-                            value={sortBy}
-                            onChange={(e) => setSortBy(e.target.value)}
-                            className="px-4 py-2 border rounded-xl focus:border-green-600 focus:outline-none bg-white"
+                    <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                            <label className="text-sm font-semibold text-gray-700">
+                                Sort by:
+                            </label>
+                            <select
+                                value={sortBy}
+                                onChange={(e) => setSortBy(e.target.value)}
+                                className="px-4 py-2 border rounded-xl focus:border-green-600 focus:outline-none bg-white text-sm font-bold"
+                            >
+                                <option value="newest">Newest First</option>
+                                <option value="price-asc">
+                                    Price: Low to High
+                                </option>
+                                <option value="price-desc">
+                                    Price: High to Low
+                                </option>
+                                <option value="name">Name: A-Z</option>
+                            </select>
+                        </div>
+
+                        {/* Mobile Filter Button */}
+                        <button
+                            onClick={() => setMobileFilterOpen(true)}
+                            className="lg:hidden flex items-center gap-2 bg-white border border-gray-200 px-5 py-2.5 rounded-xl text-sm font-bold text-primary shadow-sm active:scale-95 transition-all"
                         >
-                            <option value="newest">Newest First</option>
-                            <option value="price-asc">
-                                Price: Low to High
-                            </option>
-                            <option value="price-desc">
-                                Price: High to Low
-                            </option>
-                            <option value="name">Name: A-Z</option>
-                        </select>
+                            <Filter size={18} />
+                            Filters
+                        </button>
                     </div>
                 </div>
+
+                {/* Mobile Filter Drawer */}
+                <AnimatePresence>
+                    {mobileFilterOpen && (
+                        <>
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                onClick={() => setMobileFilterOpen(false)}
+                                className="fixed inset-0 bg-dark/40 backdrop-blur-sm z-[110] lg:hidden"
+                            />
+                            <motion.div
+                                initial={{ y: "100%" }}
+                                animate={{ y: 0 }}
+                                exit={{ y: "100%" }}
+                                transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                                className="fixed bottom-0 left-0 w-full bg-white rounded-t-[2.5rem] z-[120] p-8 max-h-[85vh] overflow-y-auto lg:hidden"
+                            >
+                                <div className="flex justify-between items-center mb-8">
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-secondary/10 rounded-lg text-secondary">
+                                            <SlidersHorizontal size={20} />
+                                        </div>
+                                        <h3 className="text-xl font-black text-primary uppercase tracking-tight">Filters</h3>
+                                    </div>
+                                    <button onClick={() => setMobileFilterOpen(false)} className="p-2 bg-bg-soft rounded-full text-primary">
+                                        <X size={20} />
+                                    </button>
+                                </div>
+
+                                <div className="space-y-6 pb-12">
+                                    <div>
+                                        <p className="text-[10px] font-black uppercase tracking-widest text-dark/30 mb-4">Categories</p>
+                                        <div className="grid grid-cols-1 gap-3">
+                                            <button
+                                                onClick={() => handleCategoryFilter("")}
+                                                className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl transition-all font-bold ${!selectedCategory
+                                                    ? "bg-primary text-white shadow-lg shadow-primary/20"
+                                                    : "bg-bg-soft text-dark/60"
+                                                    }`}
+                                            >
+                                                <span>All Products</span>
+                                                {!selectedCategory && <ChevronRight size={18} />}
+                                            </button>
+
+                                            {categories.map((cat) => (
+                                                <button
+                                                    key={cat.id}
+                                                    onClick={() => handleCategoryFilter(cat.id)}
+                                                    className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl transition-all font-bold ${selectedCategory == cat.id
+                                                        ? "bg-primary text-white shadow-lg shadow-primary/20"
+                                                        : "bg-bg-soft text-dark/60"
+                                                        }`}
+                                                >
+                                                    <span>{cat.name}</span>
+                                                    {selectedCategory == cat.id && <ChevronRight size={18} />}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </>
+                    )}
+                </AnimatePresence>
 
                 <div className="grid lg:grid-cols-4 gap-8">
 
@@ -178,17 +257,23 @@ const Shop = () => {
                                 ))}
                             </div>
                         ) : sortedProducts.length === 0 ? (
-                            <div className="text-center py-20">
-                                <div className="text-6xl mb-4">🌱</div>
-                                <p className="text-gray-500 text-xl font-semibold mb-2">
+                            <div className="text-center py-20 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm px-6">
+                                <div className="text-6xl mb-6">🌱</div>
+                                <h3 className="text-2xl font-black text-primary mb-2">
                                     No products found
+                                </h3>
+                                <p className="text-dark/40 font-bold max-w-xs mx-auto mb-8">
+                                    We couldn't find anything matching your current filters. Try a different selection!
                                 </p>
-                                <p className="text-gray-400">
-                                    Try adjusting filters
-                                </p>
+                                <button
+                                    onClick={() => handleCategoryFilter("")}
+                                    className="btn-primary"
+                                >
+                                    Reset Filters
+                                </button>
                             </div>
                         ) : (
-                            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-4 md:gap-6">
                                 {sortedProducts.map((product) => {
                                     const finalPrice =
                                         product.sale_price ||
@@ -222,8 +307,8 @@ const Shop = () => {
 
                                                     <img
                                                         src={
-                                                            product.image ||
-                                                            "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=500"
+                                                            product.image ? (product.image.startsWith('http') ? product.image : `${import.meta.env.VITE_API_URL}/storage/${product.image}`) :
+                                                                "https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=500"
                                                         }
                                                         alt={product.name}
                                                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -231,37 +316,39 @@ const Shop = () => {
                                                 </div>
                                             </Link>
 
-                                            <div className="p-6">
-                                                <h3 className="text-lg font-bold text-gray-900 mb-2 line-clamp-2">
+                                            <div className="p-4 md:p-6">
+                                                <h3 className="text-sm md:text-lg font-bold text-gray-900 mb-1 md:mb-2 line-clamp-2 min-h-[2.5rem] md:min-h-0">
                                                     {product.name}
                                                 </h3>
 
-                                                <p className="text-gray-600 text-sm mb-3 line-clamp-2">
+                                                <p className="hidden md:block text-gray-600 text-sm mb-3 line-clamp-2">
                                                     {product.description ||
                                                         "Premium quality product"}
                                                 </p>
 
-                                                <div className="flex items-center justify-between mb-4">
+                                                <div className="flex flex-col md:flex-row md:items-center justify-between mb-4 gap-2">
                                                     <div>
-                                                        <p className="text-2xl font-bold text-green-700">
+                                                        <p className="text-lg md:text-2xl font-black text-green-700">
                                                             ₹{finalPrice}
                                                         </p>
                                                         {product.sale_price && (
-                                                            <p className="text-sm text-gray-400 line-through">
+                                                            <p className="text-xs md:text-sm text-gray-400 line-through">
                                                                 ₹{product.price}
                                                             </p>
                                                         )}
                                                     </div>
 
-                                                    {product.stock > 0 ? (
-                                                        <span className="text-sm text-green-600 font-semibold bg-green-50 px-3 py-1 rounded-full">
-                                                            In Stock
-                                                        </span>
-                                                    ) : (
-                                                        <span className="text-sm text-red-600 font-semibold bg-red-50 px-3 py-1 rounded-full">
-                                                            Out of Stock
-                                                        </span>
-                                                    )}
+                                                    <div className="hidden sm:block">
+                                                        {product.stock > 0 ? (
+                                                            <span className="text-[10px] text-green-600 font-bold bg-green-50 px-2 py-1 rounded-full uppercase tracking-widest">
+                                                                In Stock
+                                                            </span>
+                                                        ) : (
+                                                            <span className="text-[10px] text-red-600 font-bold bg-red-50 px-2 py-1 rounded-full uppercase tracking-widest">
+                                                                Sold Out
+                                                            </span>
+                                                        )}
+                                                    </div>
                                                 </div>
 
                                                 <button
@@ -274,12 +361,14 @@ const Shop = () => {
                                                     disabled={
                                                         product.stock === 0
                                                     }
-                                                    className="w-full bg-gradient-to-r from-green-600 to-green-800 text-white py-3 rounded-xl font-semibold hover:scale-105 transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                                    className="w-full bg-primary text-white py-2.5 md:py-3 rounded-xl font-bold text-xs md:text-sm hover:scale-105 transition-all duration-300 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                                                 >
-                                                    🛒{" "}
-                                                    {product.stock > 0
-                                                        ? "Add to Cart"
-                                                        : "Out of Stock"}
+                                                    <ShoppingCart size={16} />
+                                                    <span className="hidden xs:inline">
+                                                        {product.stock > 0
+                                                            ? "Add to Cart"
+                                                            : "Sold Out"}
+                                                    </span>
                                                 </button>
                                             </div>
                                         </div>

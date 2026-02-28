@@ -25,7 +25,13 @@ class Product extends Model
         'short_description',
         'is_featured',
         'meta_title',
+        'meta_description',
+        'meta_keywords',
         'status',
+    ];
+
+    protected $casts = [
+        'multiple_images' => 'array',
     ];
 
     /**

@@ -23,6 +23,15 @@ class Order extends Model
         'shipping_address',
         'billing_address',
         'notes',
+        'customer_name',
+        'customer_email',
+        'customer_phone',
+        'city',
+        'state',
+        'pincode',
+        'razorpay_order_id',
+        'razorpay_payment_id',
+        'razorpay_signature',
     ];
 
     /**

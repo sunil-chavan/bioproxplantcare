@@ -1,1 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
 @import "tailwindcss";
+
+@theme {
+    --font-sans: 'Inter', sans-serif;
+    --font-display: 'Outfit', sans-serif;
+
+    /* Brand Colors from Logo */
+    --color-primary: #00563b;
+    /* Deep Forest Green (Bio) */
+    --color-secondary: #77bc1f;
+    /* Bright Leaf Green (prox) */
+    --color-accent: #f7941d;
+    /* Vibrant Orange (Dot) */
+    --color-dark: #231f20;
+    /* Rich Black (Plant Care) */
+
+    --color-bg-paper: #ffffff;
+    --color-bg-card: #ffffff;
+    --color-bg-soft: #f4f7f4;
+    /* Very light green-tinted gray */
+}
+
+@layer base {
+    html {
+        font-size: 16px;
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply font-sans antialiased bg-white text-dark;
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+    }
+
+    img,
+    video,
+    canvas,
+    svg {
+        max-width: 100%;
+        height: auto;
+        display: block;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-display font-bold tracking-tight text-primary leading-tight;
+    }
+}
+
+@layer components {
+
+    /* Organic Bazar Style Buttons */
+    .btn-primary {
+        @apply px-8 py-3 bg-primary text-white rounded-lg font-bold transition-all duration-300 hover:bg-secondary hover:shadow-lg active:scale-95 flex items-center justify-center gap-2;
+    }
+
+    .btn-outline {
+        @apply px-8 py-3 border-2 border-primary text-primary rounded-lg font-bold transition-all duration-300 hover:bg-primary/5 active:scale-95 flex items-center justify-center gap-2;
+    }
+
+    .card-clean {
+        @apply bg-white border border-gray-100 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden;
+    }
+
+    .badge-trust {
+        @apply flex items-center gap-3 p-4 bg-bg-soft rounded-xl text-primary font-bold text-sm;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+}
+
+/* Custom scrollbar - cleaner */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-primary/20 rounded-full hover:bg-primary/40 transition-colors;
+}

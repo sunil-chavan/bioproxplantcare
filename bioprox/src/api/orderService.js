@@ -10,3 +10,6 @@ export const createOrder = (data) =>
 
 export const cancelOrder = (id) =>
     api.post(`/orders/${id}/cancel`);
+
+export const verifyPayment = (data) =>
+    api.post("/orders/verify-payment", data);

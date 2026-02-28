@@ -22,8 +22,14 @@ class OrderRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'payment_method' => 'required|string',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email',
+            'phone' => 'required|string|min:10',
+            'payment_method' => 'required|string|in:cod,online,razorpay',
             'shipping_address' => 'required|string',
+            'city' => 'required|string',
+            'state' => 'required|string',
+            'pincode' => 'required|string|min:6',
             'billing_address' => 'nullable|string',
             'notes' => 'nullable|string',
             'items' => 'required|array|min:1',
