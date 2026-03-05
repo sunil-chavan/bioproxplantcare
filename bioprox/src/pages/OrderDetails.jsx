@@ -16,7 +16,8 @@ import {
     ShoppingBag,
     ChevronRight,
     HelpCircle,
-    XCircle
+    XCircle,
+    Calendar
 } from "lucide-react";
 
 const OrderDetails = () => {
