@@ -12,9 +12,9 @@ const ProductSection = ({ products }) => {
     ];
 
     return (
-        <section className="py-20 bg-bg-soft/30">
+        <section className="py-10 bg-bg-soft/30">
             <div className="container mx-auto px-6">
-                <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 gap-6">
                     <div>
                         <h2 className="text-3xl md:text-4xl font-display font-black text-primary mb-2">
                             Bestselling Botanical Care
@@ -23,7 +23,7 @@ const ProductSection = ({ products }) => {
                             Trusted by 10,000+ home gardeners for guaranteed results.
                         </p>
                     </div>
-                    <Link to="/shop" className="btn-outline px-6 py-2.5 text-sm uppercase tracking-widest">
+                    <Link to="/shop" className="btn-outline w-full md:w-auto px-6 py-2.5 text-sm uppercase tracking-widest text-center">
                         View Shop
                     </Link>
                 </div>

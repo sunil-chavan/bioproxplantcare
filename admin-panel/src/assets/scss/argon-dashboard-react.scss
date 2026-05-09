@@ -80,3 +80,12 @@
 
 // React Differences
 @import "react/react-differences";
+
+// Custom: Hide all standard scrollbars but keep scroll functionality
+::-webkit-scrollbar {
+  display: none;
+}
+* {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}

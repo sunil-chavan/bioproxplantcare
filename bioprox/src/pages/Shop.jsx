@@ -5,6 +5,7 @@ import { getCategories } from "../api/categoryService";
 import { useCart } from "../context/CartContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { Filter, X, ChevronRight, SlidersHorizontal, ShoppingCart } from "lucide-react";
+import Loader from "../components/common/Loader";
 
 const Shop = () => {
     const [products, setProducts] = useState([]);
@@ -213,7 +214,7 @@ const Shop = () => {
                                 Categories
                             </h3>
 
-                            <div className="space-y-3">
+                            <div className="space-y-3 max-h-[calc(100vh-250px)] overflow-y-auto pr-2 scrollbar-hide">
                                 <button
                                     onClick={() => handleCategoryFilter("")}
                                     className={`w-full text-left px-4 py-3 rounded-xl transition font-medium ${!selectedCategory
@@ -246,16 +247,7 @@ const Shop = () => {
                     <div className="lg:col-span-3">
 
                         {loading ? (
-                            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {[...Array(6)].map((_, i) => (
-                                    <div key={i} className="bg-white rounded-2xl p-6 animate-pulse">
-                                        <div className="bg-gray-200 aspect-square rounded-xl mb-4"></div>
-                                        <div className="bg-gray-200 h-6 rounded mb-2"></div>
-                                        <div className="bg-gray-200 h-4 rounded w-2/3 mb-4"></div>
-                                        <div className="bg-gray-200 h-12 rounded"></div>
-                                    </div>
-                                ))}
-                            </div>
+                            <Loader fullScreen={false} text="Loading products..." />
                         ) : sortedProducts.length === 0 ? (
                             <div className="text-center py-20 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm px-6">
                                 <div className="text-6xl mb-6">🌱</div>
@@ -273,7 +265,7 @@ const Shop = () => {
                                 </button>
                             </div>
                         ) : (
-                            <div className="grid grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-4 md:gap-6">
+                            <div className="grid grid-cols-1 xs:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 3xl:grid-cols-5 gap-4 md:gap-6">
                                 {sortedProducts.map((product) => {
                                     const finalPrice =
                                         product.sale_price ||

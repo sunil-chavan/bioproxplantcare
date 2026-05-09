@@ -217,8 +217,8 @@ const BlogList = () => {
                                         <h3 className="mb-0">Blogs</h3>
                                     </Col>
                                     <Col className="text-right" xs="4">
-                                        <Button color="info" onClick={toggle} size="sm">
-                                            Add Blog
+                                        <Button color="primary" onClick={toggle} size="sm">
+                                            <i className="fas fa-plus mr-2" /> Add Blog
                                         </Button>
                                     </Col>
                                 </Row>
@@ -287,10 +287,10 @@ const BlogList = () => {
                                                             </DropdownToggle>
                                                             <DropdownMenu className="dropdown-menu-arrow" right>
                                                                 <DropdownItem onClick={() => handleEdit(item)}>
-                                                                    Edit
+                                                                    <i className="fas fa-edit text-info mr-2" /> Edit
                                                                 </DropdownItem>
                                                                 <DropdownItem onClick={() => handleDelete(item.id)}>
-                                                                    Delete
+                                                                    <i className="fas fa-trash text-danger mr-2" /> Delete
                                                                 </DropdownItem>
                                                             </DropdownMenu>
                                                         </UncontrolledDropdown>
@@ -393,16 +393,20 @@ const BlogList = () => {
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="info" onClick={handleSave} disabled={saving}>
+                    <Button color="primary" onClick={handleSave} disabled={saving}>
                         {saving ? (
                             <>
                                 <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
                                 Saving...
                             </>
-                        ) : "Save"}
+                        ) : (
+                            <>
+                                <i className="fas fa-save mr-2" /> Save
+                            </>
+                        )}
                     </Button>
                     <Button color="secondary" onClick={toggle} disabled={saving}>
-                        Cancel
+                        <i className="fas fa-times mr-2" /> Cancel
                     </Button>
                 </ModalFooter>
             </Modal>

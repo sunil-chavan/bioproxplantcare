@@ -104,16 +104,18 @@ const Sidebar = (props) => {
           className="navbar-toggler"
           type="button"
           onClick={toggleCollapse}
+          aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon" />
         </button>
         {/* Brand */}
         {logo ? (
-          <NavbarBrand className="pt-0" {...navbarBrandProps}>
+          <NavbarBrand className="pt-0 d-flex align-items-center" {...navbarBrandProps}>
             <img
               alt={logo.imgAlt}
               className="navbar-brand-img"
               src={logo.imgSrc}
+              style={{ objectFit: 'contain' }}
             />
           </NavbarBrand>
         ) : null}

@@ -45,20 +45,20 @@ const Home = () => {
                 <FeatureStrip />
             </motion.div>
 
-            <motion.div {...fadeInUp} className="py-12">
+            <motion.div {...fadeInUp} className="py-8 sm:py-12">
                 <CategorySlider categories={categories} />
             </motion.div>
 
-            <motion.div {...fadeInUp} className="py-12 bg-gray-50/50">
+            <motion.div {...fadeInUp} className="py-8 sm:py-12 bg-gray-50/50">
                 <ProductSection products={products} />
             </motion.div>
 
-            <motion.div {...fadeInUp} className="py-20 relative overflow-hidden">
+            <motion.div {...fadeInUp} className="py-10 sm:py-20 relative overflow-hidden">
                 <div className="absolute top-0 left-0 w-64 h-64 bg-accent/5 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
                 <TestimonialSlider />
             </motion.div>
 
-            <motion.div {...fadeInUp} className="py-20 bg-primary/5">
+            <motion.div {...fadeInUp} className="py-10 sm:py-20 bg-primary/5">
                 <BlogSlider />
             </motion.div>
         </div>

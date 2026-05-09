@@ -15,7 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // node.js library that concatenates classes (strings)
 import classnames from "classnames";
 // javascipt plugin for creating charts
@@ -47,10 +47,26 @@ import {
 } from "variables/charts.js";
 
 import Header from "components/Headers/Header.js";
+import dashboardService from "services/dashboardService";
 
 const Index = (props) => {
   const [activeNav, setActiveNav] = useState(1);
   const [chartExample1Data, setChartExample1Data] = useState("data1");
+  const [dashboardData, setDashboardData] = useState(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await dashboardService.getStats();
+        if (res.success) {
+           setDashboardData(res.data);
+        }
+      } catch (err) {
+         console.error(err);
+      }
+    };
+    fetchData();
+  }, []);
 
   if (window.Chart) {
     parseOptions(Chart, chartOptions());
@@ -63,7 +79,7 @@ const Index = (props) => {
   };
   return (
     <>
-      <Header />
+      <Header showCards={true} />
       {/* Page content */}
       <Container className="mt--7" fluid>
         <Row>
@@ -112,7 +128,15 @@ const Index = (props) => {
                 {/* Chart */}
                 <div className="chart">
                   <Line
-                    data={chartExample1[chartExample1Data]}
+                    data={{
+                      labels: dashboardData?.chart_labels || ["May", "Jun", "Jul", "Aug", "Sep", "Oct"],
+                      datasets: [
+                        {
+                          label: "Sales",
+                          data: dashboardData?.sales_data || [0, 0, 0, 0, 0, 0],
+                        },
+                      ],
+                    }}
                     options={chartExample1.options}
                     getDatasetAtEvent={(e) => console.log(e)}
                   />
@@ -136,7 +160,16 @@ const Index = (props) => {
                 {/* Chart */}
                 <div className="chart">
                   <Bar
-                    data={chartExample2.data}
+                    data={{
+                      labels: dashboardData?.chart_labels || ["Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+                      datasets: [
+                        {
+                          label: "Orders",
+                          data: dashboardData?.orders_data || [0, 0, 0, 0, 0, 0],
+                          maxBarThickness: 10,
+                        },
+                      ],
+                    }}
                     options={chartExample2.options}
                   />
                 </div>
@@ -150,13 +183,12 @@ const Index = (props) => {
               <CardHeader className="border-0">
                 <Row className="align-items-center">
                   <div className="col">
-                    <h3 className="mb-0">Page visits</h3>
+                    <h3 className="mb-0">Recent Orders</h3>
                   </div>
                   <div className="col text-right">
                     <Button
                       color="primary"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
+                      href="/admin/orders"
                       size="sm"
                     >
                       See all
@@ -167,56 +199,31 @@ const Index = (props) => {
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
                   <tr>
-                    <th scope="col">Page name</th>
-                    <th scope="col">Visitors</th>
-                    <th scope="col">Unique users</th>
-                    <th scope="col">Bounce rate</th>
+                    <th scope="col">Order #</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Amount</th>
+                    <th scope="col">Status</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">/argon/</th>
-                    <td>4,569</td>
-                    <td>340</td>
-                    <td>
-                      <i className="fas fa-arrow-up text-success mr-3" /> 46,53%
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">/argon/index.html</th>
-                    <td>3,985</td>
-                    <td>319</td>
-                    <td>
-                      <i className="fas fa-arrow-down text-warning mr-3" />{" "}
-                      46,53%
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">/argon/charts.html</th>
-                    <td>3,513</td>
-                    <td>294</td>
-                    <td>
-                      <i className="fas fa-arrow-down text-warning mr-3" />{" "}
-                      36,49%
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">/argon/tables.html</th>
-                    <td>2,050</td>
-                    <td>147</td>
-                    <td>
-                      <i className="fas fa-arrow-up text-success mr-3" /> 50,87%
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">/argon/profile.html</th>
-                    <td>1,795</td>
-                    <td>190</td>
-                    <td>
-                      <i className="fas fa-arrow-down text-danger mr-3" />{" "}
-                      46,53%
-                    </td>
-                  </tr>
+                  {dashboardData?.recent_orders?.map((order, idx) => (
+                    <tr key={idx}>
+                      <th scope="row">{order.order_number}</th>
+                      <td>{order.customer_name}</td>
+                      <td>${order.net_amount}</td>
+                      <td>
+                        <span className="badge badge-dot mr-4">
+                          <i className={order.status === 'completed' || order.status === 'delivered' ? 'bg-success' : 'bg-warning'} />
+                          {order.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                  {(!dashboardData?.recent_orders || dashboardData.recent_orders.length === 0) && (
+                    <tr>
+                      <td colSpan="4" className="text-center">No recent orders</td>
+                    </tr>
+                  )}
                 </tbody>
               </Table>
             </Card>
@@ -226,13 +233,12 @@ const Index = (props) => {
               <CardHeader className="border-0">
                 <Row className="align-items-center">
                   <div className="col">
-                    <h3 className="mb-0">Social traffic</h3>
+                    <h3 className="mb-0">Top Selling Products</h3>
                   </div>
                   <div className="col text-right">
                     <Button
                       color="primary"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
+                      href="/admin/products"
                       size="sm"
                     >
                       See all
@@ -243,88 +249,35 @@ const Index = (props) => {
               <Table className="align-items-center table-flush" responsive>
                 <thead className="thead-light">
                   <tr>
-                    <th scope="col">Referral</th>
-                    <th scope="col">Visitors</th>
+                    <th scope="col">Product Name</th>
+                    <th scope="col">Sales</th>
                     <th scope="col" />
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <th scope="row">Facebook</th>
-                    <td>1,480</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <span className="mr-2">60%</span>
-                        <div>
-                          <Progress
-                            max="100"
-                            value="60"
-                            barClassName="bg-gradient-danger"
-                          />
+                  {dashboardData?.top_products?.map((product, idx) => (
+                    <tr key={idx}>
+                      <th scope="row">{product.name}</th>
+                      <td>{product.sales}</td>
+                      <td>
+                        <div className="d-flex align-items-center">
+                          <span className="mr-2">{Math.min(product.sales, 100)}%</span>
+                          <div>
+                            <Progress
+                              max="100"
+                              value={Math.min(product.sales, 100)}
+                              barClassName="bg-gradient-success"
+                            />
+                          </div>
                         </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Facebook</th>
-                    <td>5,480</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <span className="mr-2">70%</span>
-                        <div>
-                          <Progress
-                            max="100"
-                            value="70"
-                            barClassName="bg-gradient-success"
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Google</th>
-                    <td>4,807</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <span className="mr-2">80%</span>
-                        <div>
-                          <Progress max="100" value="80" />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">Instagram</th>
-                    <td>3,678</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <span className="mr-2">75%</span>
-                        <div>
-                          <Progress
-                            max="100"
-                            value="75"
-                            barClassName="bg-gradient-info"
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <th scope="row">twitter</th>
-                    <td>2,645</td>
-                    <td>
-                      <div className="d-flex align-items-center">
-                        <span className="mr-2">30%</span>
-                        <div>
-                          <Progress
-                            max="100"
-                            value="30"
-                            barClassName="bg-gradient-warning"
-                          />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
+                      </td>
+                    </tr>
+                  ))}
+                  {(!dashboardData?.top_products || dashboardData.top_products.length === 0) && (
+                    <tr>
+                      <td colSpan="3" className="text-center">No products sold yet</td>
+                    </tr>
+                  )}
                 </tbody>
               </Table>
             </Card>

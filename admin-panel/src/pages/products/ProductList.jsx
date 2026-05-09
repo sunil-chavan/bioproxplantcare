@@ -316,13 +316,13 @@ const ProductList = () => {
                                         <h3 className="mb-0">Products</h3>
                                     </Col>
                                     <Col className="text-right" xs="4">
-                                        <Button color="info" onClick={toggle} size="sm">
-                                            Add Product
+                                        <Button color="primary" onClick={toggle} size="sm">
+                                            <i className="fas fa-plus mr-2" /> Add Product
                                         </Button>
                                     </Col>
                                 </Row>
                                 <Row className="mt-3">
-                                    <Col md="4">
+                                    <Col xs="12" md="4">
                                         <Input
                                             placeholder="Search products..."
                                             type="text"
@@ -400,10 +400,10 @@ const ProductList = () => {
                                                             </DropdownToggle>
                                                             <DropdownMenu className="dropdown-menu-arrow" right>
                                                                 <DropdownItem onClick={() => handleEdit(product)}>
-                                                                    Edit
+                                                                    <i className="fas fa-edit text-info mr-2" /> Edit
                                                                 </DropdownItem>
                                                                 <DropdownItem onClick={() => handleDelete(product.id)}>
-                                                                    Delete
+                                                                    <i className="fas fa-trash text-danger mr-2" /> Delete
                                                                 </DropdownItem>
                                                             </DropdownMenu>
                                                         </UncontrolledDropdown>
@@ -706,16 +706,20 @@ const ProductList = () => {
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="info" onClick={handleSave} disabled={saving}>
+                    <Button color="primary" onClick={handleSave} disabled={saving}>
                         {saving ? (
                             <>
                                 <span className="spinner-border spinner-border-sm mr-2" role="status" aria-hidden="true"></span>
                                 Saving...
                             </>
-                        ) : "Save Product"}
+                        ) : (
+                            <>
+                                <i className="fas fa-save mr-2" /> Save Product
+                            </>
+                        )}
                     </Button>
                     <Button color="secondary" onClick={toggle} disabled={saving}>
-                        Cancel
+                        <i className="fas fa-times mr-2" /> Cancel
                     </Button>
                 </ModalFooter>
             </Modal>

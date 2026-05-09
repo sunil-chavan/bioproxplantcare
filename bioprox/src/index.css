@@ -20,6 +20,8 @@
     --color-bg-card: #ffffff;
     --color-bg-soft: #f4f7f4;
     /* Very light green-tinted gray */
+
+    --breakpoint-xs: 475px;
 }
 
 @layer base {
@@ -80,6 +82,18 @@
     .scrollbar-hide {
         -ms-overflow-style: none;
         scrollbar-width: none;
+    }
+
+    .container-wide {
+        @apply max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-12;
+    }
+
+    .section-spacing {
+        @apply py-10 sm:py-20;
+    }
+
+    .responsive-grid {
+        @apply grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 sm:gap-6;
     }
 }
 

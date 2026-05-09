@@ -1,0 +1,72 @@
+/* Custom responsive tweaks for Argon Dashboard */
+
+@media (max-width: 767.98px) {
+    .main-content {
+        padding-bottom: 60px; /* Space for potential bottom navigation or sticky buttons */
+    }
+
+    .card-header .row.align-items-center {
+        flex-direction: column;
+        align-items: flex-start !important;
+    }
+
+    .card-header .col-8,
+    .card-header .col-4 {
+        max-width: 100%;
+        width: 100%;
+        text-align: left !important;
+        margin-bottom: 10px;
+    }
+
+    .table-responsive {
+        border: 0;
+        margin-bottom: 0;
+    }
+
+    /* Better table scrolling indicator */
+    .table-responsive::after {
+        content: 'Swipe for more →';
+        display: block;
+        text-align: center;
+        font-size: 10px;
+        color: #adb5bd;
+        padding: 5px 0;
+        font-style: italic;
+    }
+
+    /* Form stack improvements */
+    .modal-body .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .modal-body .row > [class*="col-"] {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+/* Sidebar Logo scaling */
+.navbar-brand-img {
+    max-height: 2.5rem !important;
+    width: auto;
+}
+
+@media (min-width: 768px) {
+    .navbar-brand-img {
+        max-height: 4rem !important;
+    }
+}
+
+/* Custom Scrollbar for tables */
+.table-responsive::-webkit-scrollbar {
+    height: 4px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+    background: #5e72e4;
+    border-radius: 10px;
+}

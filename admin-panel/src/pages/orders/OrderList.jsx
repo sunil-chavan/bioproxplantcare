@@ -171,7 +171,7 @@ const OrderList = () => {
                                                         </DropdownToggle>
                                                         <DropdownMenu className="dropdown-menu-arrow" right>
                                                             <DropdownItem onClick={() => navigate(`/admin/order-details/${order.id}`)}>
-                                                                View Details
+                                                                <i className="fas fa-eye text-primary mr-2" /> View Details
                                                             </DropdownItem>
                                                         </DropdownMenu>
                                                     </UncontrolledDropdown>

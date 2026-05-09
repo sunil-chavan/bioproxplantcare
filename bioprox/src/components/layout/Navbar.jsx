@@ -37,7 +37,7 @@ const Navbar = () => {
 
                 {/* Logo Section */}
                 <Link to="/" className="flex items-center gap-2 shrink-0">
-                    <img src={logo} alt="BioProx Plant Care" className="h-8 md:h-12 w-auto object-contain" />
+                    <img src={logo} alt="BioProx Plant Care" className="h-7 xs:h-8 md:h-12 w-auto object-contain transition-all" />
                 </Link>
 
                 {/* Desktop Navigation Links */}
